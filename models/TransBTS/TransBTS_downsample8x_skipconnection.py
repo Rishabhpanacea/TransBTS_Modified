@@ -87,36 +87,36 @@ class TransformerBTS(nn.Module):
 
 
     def encode(self, x):
-        print("Inside encoder")
+        # print("Inside encoder")
         if self.conv_patch_representation:
             # combine embedding with conv patch distribution
             x1_1, x2_1, x3_1, x = self.Unet(x)
-            print("Inside encoder 1")
+            # print("Inside encoder 1")
             x = self.bn(x)
-            print("Inside encoder 2")
+            # print("Inside encoder 2")
             x = self.relu(x)
 
-            print("Inside encoder 3")
+            # print("Inside encoder 3")
             x = self.conv_x(x)
 
-            print("Inside encoder 4")
+            # print("Inside encoder 4")
             x = x.permute(0, 2, 3, 4, 1).contiguous()
 
-            print("Inside encoder 5")
+            # print("Inside encoder 5")
             x = x.view(x.size(0), -1, self.embedding_dim)
 
-            print("Inside encoder 6")
+            # print("Inside encoder 6")
 
         else:
             x = self.Unet(x)
 
-            print("Inside encoder 1")
+            # print("Inside encoder 1")
             x = self.bn(x)
 
-            print("Inside encoder 2")
+            # print("Inside encoder 2")
             x = self.relu(x)
 
-            print("Inside encoder 3")
+            # print("Inside encoder 3")
             x = (
                 x.unfold(2, 2, 2)
                 .unfold(3, 2, 2)
@@ -124,35 +124,35 @@ class TransformerBTS(nn.Module):
                 .contiguous()
             )
 
-            print("Inside encoder 4")
+            # print("Inside encoder 4")
             x = x.view(x.size(0), x.size(1), -1, 8)
 
-            print("Inside encoder 5")
+            # print("Inside encoder 5")
             x = x.permute(0, 2, 3, 1).contiguous()
 
-            print("Inside encoder 6")
+            # print("Inside encoder 6")
             x = x.view(x.size(0), -1, self.flatten_dim)
 
-            print("Inside encoder 7")
+            # print("Inside encoder 7")
             x = self.linear_encoding(x)
         
 
-        print("Inside encoder 8")
+        # print("Inside encoder 8")
 
         x = self.position_encoding(x)
 
-        print("Inside encoder 9")
+        # print("Inside encoder 9")
         x = self.pe_dropout(x)
 
-        print("Inside encoder 10")
+        # print("Inside encoder 10")
 
         # apply transformer
         x, intmd_x = self.transformer(x)
 
-        print("Inside encoder 11")
+        # print("Inside encoder 11")
         x = self.pre_head_ln(x)
 
-        print("Inside encoder 12")
+        # print("Inside encoder 12")
 
         return x1_1, x2_1, x3_1, x, intmd_x
 
@@ -172,14 +172,14 @@ class TransformerBTS(nn.Module):
 
 
     def forward(self, x, auxillary_output_layers=[1, 2, 3, 4]):
-        print("log1")
+        # print("log1")
 
         x1_1, x2_1, x3_1, encoder_output, intmd_encoder_outputs = self.encode(x)
-        print('x1_1:- ',x1_1.shape)
-        print('x2_1:- ',x2_1.shape)
-        print('x3_1:- ',x3_1.shape)
-        print('encoder_output:- ',encoder_output.shape)
-        print('intmd_encoder_outputs:- ',intmd_encoder_outputs)
+        # print('x1_1:- ',x1_1.shape)
+        # print('x2_1:- ',x2_1.shape)
+        # print('x3_1:- ',x3_1.shape)
+        # print('encoder_output:- ',encoder_output.shape)
+        # print('intmd_encoder_outputs:- ',intmd_encoder_outputs)
 
 
         Custom_Decoder_Output = self.custom_decoder(encoder_output)
