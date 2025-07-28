@@ -80,10 +80,10 @@ class TransformerBTS(nn.Module):
 
 
 
-        self.pool = nn.AdaptiveAvgPool1d(1)   # Pool over sequence length
-        self.fc1 = nn.Linear(512, 128)
-        self.fc2 = nn.Linear(128, 1)
-        self.sigmoid = nn.Sigmoid()           # Output between 0 and 1
+        # self.pool = nn.AdaptiveAvgPool1d(1)   # Pool over sequence length
+        # self.fc1 = nn.Linear(512, 128)
+        # self.fc2 = nn.Linear(128, 1)
+        # self.sigmoid = nn.Sigmoid()           # Output between 0 and 1
 
 
     def encode(self, x):
@@ -159,16 +159,16 @@ class TransformerBTS(nn.Module):
     def decode(self, x):
         raise NotImplementedError("Should be implemented in child class!!")
     
-    def custom_decoder(self,x):
-        # x shape: [1, 4096, 512] → transpose to [1, 512, 4096]
-        x = x.transpose(1, 2)
-        x = self.pool(x)                      # → [1, 512, 1]
-        x = x.squeeze(-1)                     # → [1, 512]
-        x = self.fc1(x)
-        x = torch.relu(x)
-        x = self.fc2(x)                       # → [1, 1]
-        x = self.sigmoid(x)                   # [0, 1]
-        return x * 100                        # scale to [0, 100]
+    # def custom_decoder(self,x):
+    #     # x shape: [1, 4096, 512] → transpose to [1, 512, 4096]
+    #     x = x.transpose(1, 2)
+    #     x = self.pool(x)                      # → [1, 512, 1]
+    #     x = x.squeeze(-1)                     # → [1, 512]
+    #     x = self.fc1(x)
+    #     x = torch.relu(x)
+    #     x = self.fc2(x)                       # → [1, 1]
+    #     x = self.sigmoid(x)                   # [0, 1]
+    #     return x * 100                        # scale to [0, 100]
 
 
     def forward(self, x, auxillary_output_layers=[1, 2, 3, 4]):
@@ -182,10 +182,12 @@ class TransformerBTS(nn.Module):
         # print('intmd_encoder_outputs:- ',intmd_encoder_outputs)
 
 
-        Custom_Decoder_Output = self.custom_decoder(encoder_output)
+        # Custom_Decoder_Output = self.custom_decoder(encoder_output)
+
+        return encoder_output, intmd_encoder_outputs
 
 
-        return Custom_Decoder_Output
+        # return Custom_Decoder_Output
 
 
 
